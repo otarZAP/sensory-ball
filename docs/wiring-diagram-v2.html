@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sensory Ball v2 — Wiring Diagram</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #161b22;
+    --line: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --red: #ff6b6b;
+    --green: #6bcf7f;
+    --blue: #6ba6ff;
+    --yellow: #f7c948;
+    --orange: #f78c4a;
+    --purple: #c98aff;
+    --pink: #ff6bb4;
+    --black: #444c56;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2rem 1.5rem 4rem;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  h1 { margin: 0 0 .25rem; font-size: 1.6rem; }
+  header p { margin: 0; color: var(--muted); }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(247,140,74,.15);
+    color: var(--orange);
+    border: 1px solid rgba(247,140,74,.4);
+    border-radius: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-left: .5rem;
+    vertical-align: middle;
+  }
+  .diagram {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+  }
+  svg { display: block; width: 100%; height: auto; max-width: 1200px; margin: 0 auto; }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    margin: 1rem 0 1.5rem;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: .4rem; }
+  .swatch { width: 20px; height: 3px; border-radius: 2px; display: inline-block; }
+  h2 { font-size: 1.15rem; margin: 2rem 0 .75rem; border-bottom: 1px solid var(--line); padding-bottom: .35rem; }
+  table {
+    width: 100%; border-collapse: collapse;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+    font-size: 14px;
+  }
+  th, td { padding: .55rem .75rem; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #1c2129; color: var(--accent); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  code { background: #1c2129; padding: 1px 6px; border-radius: 3px; font-size: 13px; color: var(--yellow); }
+  .note {
+    border-left: 3px solid var(--accent);
+    background: rgba(88,166,255,.06);
+    padding: .75rem 1rem;
+    border-radius: 0 6px 6px 0;
+    margin: 1rem 0;
+    color: var(--text);
+  }
+  .warn {
+    border-left: 3px solid var(--orange);
+    background: rgba(247,140,74,.07);
+    padding: .75rem 1rem;
+    border-radius: 0 6px 6px 0;
+    margin: 1rem 0;
+  }
+  /* SVG styles */
+  .wire { stroke-width: 2.2; fill: none; stroke-linecap: round; }
+  .wire-red    { stroke: var(--red); }
+  .wire-green  { stroke: var(--green); }
+  .wire-blue   { stroke: var(--blue); }
+  .wire-yellow { stroke: var(--yellow); }
+  .wire-orange { stroke: var(--orange); }
+  .wire-purple { stroke: var(--purple); }
+  .wire-pink   { stroke: var(--pink); }
+  .wire-black  { stroke: #6e7681; }
+  .wire-power-pos { stroke: #ff5252; stroke-width: 2.8; }
+  .wire-power-neg { stroke: #b1b9c2; stroke-width: 2.8; }
+  .component { fill: #1c2129; stroke: var(--line); stroke-width: 1.5; }
+  .component-label { fill: var(--text); font: 600 13px monospace; text-anchor: middle; }
+  .pin-label { fill: var(--muted); font: 11px monospace; }
+  .pin { fill: #2d333b; stroke: var(--line); stroke-width: 1; }
+  .pin-active { fill: var(--accent); }
+  .resistor { fill: #4a3520; stroke: #d4a574; stroke-width: 1.2; }
+  .resistor-label { fill: var(--text); font: 10px monospace; text-anchor: middle; }
+  .diode-body { fill: #2d3748; stroke: #ccc; stroke-width: 1; }
+  .battery { fill: #2d3748; stroke: var(--line); }
+  .battery-pos { fill: var(--red); }
+  .annot { fill: var(--muted); font: italic 11px sans-serif; }
+  .annot-strong { fill: var(--text); font: 600 12px monospace; }
+  .neopixel { fill: #fff; }
+  .neopixel-1 { fill: #ff6b6b; }
+  .neopixel-2 { fill: #f78c4a; }
+  .neopixel-3 { fill: #f7c948; }
+  .neopixel-4 { fill: #6bcf7f; }
+  .neopixel-5 { fill: #6ba6ff; }
+  .neopixel-6 { fill: #c98aff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Sensory Ball v2 — Wiring Diagram <span class="pill">design · not yet built</span></h1>
+  <p>XIAO ESP32S3 + MPU-6050 + 12-pixel NeoPixel ring + DFPlayer Mini + 8&nbsp;Ω speaker + Xbox rumble motor + 1S LiPo</p>
+</header>
+
+<div class="diagram">
+  <svg viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sensory Ball v2 wiring diagram">
+
+    <!-- ============== XIAO ESP32S3 ============== -->
+    <g id="xiao" transform="translate(490,210)">
+      <rect class="component" x="0" y="0" width="200" height="300" rx="8"/>
+      <text class="component-label" x="100" y="22">XIAO ESP32S3</text>
+      <text class="annot" x="100" y="40" text-anchor="middle">USB-C ↑</text>
+
+      <!-- USB-C indicator -->
+      <rect x="80" y="-12" width="40" height="14" rx="3" fill="#2d333b" stroke="#888"/>
+
+      <!-- Left pins -->
+      <g font-family="monospace" font-size="11">
+        <rect class="pin" x="-12" y="60"   width="14" height="10"/><text class="pin-label" x="6"   y="69">5V</text>
+        <rect class="pin pin-active" x="-12" y="78"   width="14" height="10"/><text class="pin-label" x="6"   y="87">GND</text>
+        <rect class="pin pin-active" x="-12" y="96"   width="14" height="10"/><text class="pin-label" x="6"   y="105">3V3</text>
+        <rect class="pin" x="-12" y="114"  width="14" height="10"/><text class="pin-label" x="6"   y="123">D10</text>
+        <rect class="pin pin-active" x="-12" y="132"  width="14" height="10"/><text class="pin-label" x="6"   y="141">D9 (RX)</text>
+        <rect class="pin pin-active" x="-12" y="150"  width="14" height="10"/><text class="pin-label" x="6"   y="159">D8 (TX)</text>
+        <rect class="pin" x="-12" y="168"  width="14" height="10"/><text class="pin-label" x="6"   y="177">D7</text>
+      </g>
+
+      <!-- Right pins -->
+      <g font-family="monospace" font-size="11">
+        <rect class="pin pin-active" x="198" y="60"   width="14" height="10"/><text class="pin-label" x="194" y="69" text-anchor="end">D0  (NeoPx)</text>
+        <rect class="pin" x="198" y="78"   width="14" height="10"/><text class="pin-label" x="194" y="87" text-anchor="end">D1</text>
+        <rect class="pin" x="198" y="96"   width="14" height="10"/><text class="pin-label" x="194" y="105" text-anchor="end">D2</text>
+        <rect class="pin pin-active" x="198" y="114"  width="14" height="10"/><text class="pin-label" x="194" y="123" text-anchor="end">D3  (VIB)</text>
+        <rect class="pin pin-active" x="198" y="132"  width="14" height="10"/><text class="pin-label" x="194" y="141" text-anchor="end">D4 (SDA)</text>
+        <rect class="pin pin-active" x="198" y="150"  width="14" height="10"/><text class="pin-label" x="194" y="159" text-anchor="end">D5 (SCL)</text>
+        <rect class="pin" x="198" y="168"  width="14" height="10"/><text class="pin-label" x="194" y="177" text-anchor="end">D6</text>
+      </g>
+
+      <!-- Battery pads (bottom underside) -->
+      <g>
+        <rect class="pin pin-active" x="50"  y="290" width="20" height="14"/>
+        <text class="pin-label" x="60"  y="318" text-anchor="middle">BAT+</text>
+        <rect class="pin pin-active" x="130" y="290" width="20" height="14"/>
+        <text class="pin-label" x="140" y="318" text-anchor="middle">BAT−</text>
+      </g>
+    </g>
+
+    <!-- ============== MPU-6050 (GY-521) — same as v1 ============== -->
+    <g id="mpu" transform="translate(870,240)">
+      <rect class="component" x="0" y="0" width="170" height="170" rx="6"/>
+      <text class="component-label" x="85" y="22">MPU-6050</text>
+      <text class="annot" x="85" y="38" text-anchor="middle">GY-521 breakout</text>
+      <rect x="55" y="65" width="60" height="60" fill="#2d333b" stroke="#444c56" rx="3"/>
+      <text x="85" y="100" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">MPU-6050</text>
+
+      <!-- Pins on LEFT edge (facing XIAO) -->
+      <g font-family="monospace" font-size="11">
+        <rect class="pin pin-active" x="-12" y="50"  width="14" height="10"/><text class="pin-label" x="6"  y="59">VCC</text>
+        <rect class="pin pin-active" x="-12" y="68"  width="14" height="10"/><text class="pin-label" x="6"  y="77">GND</text>
+        <rect class="pin pin-active" x="-12" y="86"  width="14" height="10"/><text class="pin-label" x="6"  y="95">SCL</text>
+        <rect class="pin pin-active" x="-12" y="104" width="14" height="10"/><text class="pin-label" x="6"  y="113">SDA</text>
+        <rect class="pin" x="-12" y="122" width="14" height="10"/><text class="pin-label" x="6"  y="131">XDA</text>
+        <rect class="pin" x="-12" y="140" width="14" height="10"/><text class="pin-label" x="6"  y="149">XCL</text>
+        <rect class="pin pin-active" x="-12" y="158" width="14" height="10"/><text class="pin-label" x="6"  y="167">AD0</text>
+      </g>
+    </g>
+
+    <!-- ============== NeoPixel Ring (12 pixels) ============== -->
+    <g id="neopixel" transform="translate(870,60)">
+      <rect class="component" x="0" y="0" width="180" height="160" rx="6"/>
+      <text class="component-label" x="90" y="22">NeoPixel Ring</text>
+      <text class="annot" x="90" y="38" text-anchor="middle">12 × WS2812B · ~37 mm</text>
+
+      <!-- Ring drawing -->
+      <g transform="translate(90,95)">
+        <circle r="40" fill="#0e1116" stroke="#30363d" stroke-width="1.5"/>
+        <circle r="22" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+        <!-- 12 pixel dots around the ring at 30° intervals -->
+        <circle cx="0"   cy="-31" r="4" class="neopixel-1"/>
+        <circle cx="15.5" cy="-26.8" r="4" class="neopixel-2"/>
+        <circle cx="26.8" cy="-15.5" r="4" class="neopixel-3"/>
+        <circle cx="31"  cy="0"   r="4" class="neopixel-4"/>
+        <circle cx="26.8" cy="15.5" r="4" class="neopixel-5"/>
+        <circle cx="15.5" cy="26.8" r="4" class="neopixel-6"/>
+        <circle cx="0"   cy="31"  r="4" class="neopixel-1"/>
+        <circle cx="-15.5" cy="26.8" r="4" class="neopixel-2"/>
+        <circle cx="-26.8" cy="15.5" r="4" class="neopixel-3"/>
+        <circle cx="-31" cy="0"   r="4" class="neopixel-4"/>
+        <circle cx="-26.8" cy="-15.5" r="4" class="neopixel-5"/>
+        <circle cx="-15.5" cy="-26.8" r="4" class="neopixel-6"/>
+      </g>
+
+      <!-- Pads on LEFT edge facing XIAO -->
+      <g font-family="monospace" font-size="11">
+        <rect class="pin pin-active" x="-12" y="60"  width="14" height="10"/><text class="pin-label" x="6"  y="69">VCC</text>
+        <rect class="pin pin-active" x="-12" y="80"  width="14" height="10"/><text class="pin-label" x="6"  y="89">DIN</text>
+        <rect class="pin pin-active" x="-12" y="100" width="14" height="10"/><text class="pin-label" x="6"  y="109">GND</text>
+      </g>
+
+      <!-- Optional series resistor on DIN -->
+      <g transform="translate(-50,80)">
+        <rect class="resistor" x="0" y="-3" width="34" height="14" rx="2"/>
+        <text class="resistor-label" x="17" y="24">330Ω</text>
+        <text class="annot" x="17" y="-8" text-anchor="middle">opt.</text>
+      </g>
+    </g>
+
+    <!-- ============== DFPlayer Mini + Speaker ============== -->
+    <g id="dfplayer" transform="translate(60,80)">
+      <rect class="component" x="0" y="0" width="200" height="140" rx="6"/>
+      <text class="component-label" x="100" y="22">DFPlayer Mini</text>
+      <text class="annot" x="100" y="38" text-anchor="middle">UART · microSD · 3W amp</text>
+
+      <!-- microSD slot indicator -->
+      <rect x="10" y="55" width="50" height="32" fill="#2d333b" stroke="#888" stroke-width="1" rx="2"/>
+      <text class="annot" x="35" y="76" text-anchor="middle">µSD</text>
+
+      <!-- chip blob -->
+      <rect x="80" y="60" width="60" height="25" fill="#2d333b" stroke="#444c56" rx="2"/>
+      <text x="110" y="77" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="9">DFR0299</text>
+
+      <!-- Pins (showing only the ones we wire) — right side of module -->
+      <g font-family="monospace" font-size="10">
+        <rect class="pin pin-active" x="198" y="50"  width="14" height="10"/><text class="pin-label" x="194" y="59" text-anchor="end">VCC</text>
+        <rect class="pin pin-active" x="198" y="68"  width="14" height="10"/><text class="pin-label" x="194" y="77" text-anchor="end">RX</text>
+        <rect class="pin pin-active" x="198" y="86"  width="14" height="10"/><text class="pin-label" x="194" y="95" text-anchor="end">TX</text>
+        <rect class="pin pin-active" x="198" y="104" width="14" height="10"/><text class="pin-label" x="194" y="113" text-anchor="end">SPK1</text>
+        <rect class="pin pin-active" x="198" y="122" width="14" height="10"/><text class="pin-label" x="194" y="131" text-anchor="end">SPK2</text>
+      </g>
+      <!-- left side: just GND for layout -->
+      <g font-family="monospace" font-size="10">
+        <rect class="pin pin-active" x="-12" y="68" width="14" height="10"/><text class="pin-label" x="6" y="77">GND</text>
+      </g>
+
+      <!-- Inline 1k resistor on the RX line -->
+      <g transform="translate(216,68)">
+        <rect class="resistor" x="0" y="-3" width="34" height="14" rx="2"/>
+        <text class="resistor-label" x="17" y="24">1kΩ</text>
+      </g>
+    </g>
+
+    <!-- Speaker -->
+    <g id="speaker" transform="translate(310,110)">
+      <circle cx="40" cy="40" r="36" fill="#1c2129" stroke="var(--line)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="22" fill="#2d333b" stroke="#444c56" stroke-width="1"/>
+      <circle cx="40" cy="40" r="6"  fill="#444c56"/>
+      <text class="component-label" x="40" y="98">Speaker</text>
+      <text class="annot" x="40" y="113" text-anchor="middle">8Ω 0.5W · ~28mm</text>
+      <!-- Pads -->
+      <rect class="pin pin-active" x="-12" y="30" width="14" height="10"/>
+      <text class="pin-label" x="-6" y="25">+</text>
+      <rect class="pin pin-active" x="-12" y="50" width="14" height="10"/>
+      <text class="pin-label" x="-6" y="74">−</text>
+    </g>
+
+    <!-- ============== Vibration motor + driver stage ============== -->
+    <g id="vibstage" transform="translate(60,580)">
+      <rect class="component" x="0" y="0" width="370" height="220" rx="6"/>
+      <text class="component-label" x="185" y="22">Vibration motor + driver</text>
+      <text class="annot" x="185" y="38" text-anchor="middle">Xbox rumble motor · 2N7000 MOSFET · 1N4148 flyback</text>
+
+      <!-- Motor (drawn as circle with M) -->
+      <g transform="translate(60,120)">
+        <circle r="28" fill="#2d3748" stroke="#888" stroke-width="1.5"/>
+        <text x="0" y="5" text-anchor="middle" fill="#e6edf3" font-family="monospace" font-size="18">M</text>
+        <text class="annot" x="0" y="48" text-anchor="middle">~3 V motor</text>
+        <!-- Leads -->
+        <line x1="-22" y1="-18" x2="-22" y2="-50" stroke="#ff5252" stroke-width="2.5"/><!-- + lead up -->
+        <text class="pin-label" x="-30" y="-44" text-anchor="end">+</text>
+        <line x1="22"  y1="-18" x2="22"  y2="-50" stroke="#b1b9c2" stroke-width="2.5"/><!-- − lead up -->
+        <text class="pin-label" x="30"  y="-44">−</text>
+      </g>
+
+      <!-- 1N4148 flyback diode in parallel with the motor (cathode to +) -->
+      <g transform="translate(140,80)">
+        <line x1="0" y1="0" x2="0" y2="-12" stroke="#ccc" stroke-width="1.5"/>
+        <polygon class="diode-body" points="-7,0 7,0 0,12"/>
+        <line x1="-7" y1="12" x2="7" y2="12" stroke="#ccc" stroke-width="2"/>
+        <line x1="0" y1="12" x2="0" y2="24" stroke="#ccc" stroke-width="1.5"/>
+        <text class="annot" x="20" y="6">1N4148</text>
+        <text class="annot" x="20" y="20">flyback</text>
+      </g>
+
+      <!-- MOSFET 2N7000 (TO-92 outline) -->
+      <g transform="translate(230,130)">
+        <!-- semicircle body -->
+        <path d="M -20 -16 A 22 22 0 0 1 20 -16 L 20 16 L -20 16 Z" fill="#1c2129" stroke="#888" stroke-width="1.5"/>
+        <text class="component-label" x="0" y="2">2N7000</text>
+        <!-- Pins -->
+        <line x1="-12" y1="16" x2="-12" y2="50" stroke="#888" stroke-width="1.5"/><!-- S -->
+        <line x1="0"   y1="16" x2="0"   y2="50" stroke="#888" stroke-width="1.5"/><!-- G -->
+        <line x1="12"  y1="16" x2="12"  y2="50" stroke="#888" stroke-width="1.5"/><!-- D -->
+        <text class="pin-label" x="-12" y="62" text-anchor="middle">S</text>
+        <text class="pin-label" x="0"   y="62" text-anchor="middle">G</text>
+        <text class="pin-label" x="12"  y="62" text-anchor="middle">D</text>
+      </g>
+
+      <!-- Gate pulldown 100k -->
+      <g transform="translate(290,140)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#ccc" stroke-width="1.5"/>
+        <rect class="resistor" x="-9" y="6" width="18" height="28" rx="2"/>
+        <line x1="0" y1="34" x2="0" y2="46" stroke="#ccc" stroke-width="1.5"/>
+        <!-- GND symbol -->
+        <line x1="-8" y1="46" x2="8" y2="46" stroke="#ccc" stroke-width="2"/>
+        <line x1="-5" y1="50" x2="5" y2="50" stroke="#ccc" stroke-width="2"/>
+        <line x1="-2" y1="54" x2="2" y2="54" stroke="#ccc" stroke-width="2"/>
+        <text class="annot" x="14" y="22">100kΩ</text>
+        <text class="annot" x="14" y="34">pulldown</text>
+      </g>
+
+      <!-- Stage pads on RIGHT edge -->
+      <g font-family="monospace" font-size="10">
+        <rect class="pin pin-active" x="358" y="80"  width="14" height="10"/><text class="pin-label" x="354" y="89" text-anchor="end">+BAT</text>
+        <rect class="pin pin-active" x="358" y="140" width="14" height="10"/><text class="pin-label" x="354" y="149" text-anchor="end">GATE</text>
+        <rect class="pin pin-active" x="358" y="180" width="14" height="10"/><text class="pin-label" x="354" y="189" text-anchor="end">GND</text>
+      </g>
+    </g>
+
+    <!-- ============== LiPo Battery ============== -->
+    <g id="battery" transform="translate(510,755)">
+      <rect class="battery" x="0" y="0" width="160" height="50" rx="6"/>
+      <rect class="battery-pos" x="155" y="18" width="6" height="14"/>
+      <text class="component-label" x="80" y="22">LiPo 1S</text>
+      <text class="annot" x="80" y="38" text-anchor="middle">3.7V · 450 mAh</text>
+      <!-- pads -->
+      <circle cx="20" cy="64" r="3" fill="#ff5252"/>
+      <text class="pin-label" x="20" y="80" text-anchor="middle">+</text>
+      <circle cx="60" cy="64" r="3" fill="#b1b9c2"/>
+      <text class="pin-label" x="60" y="80" text-anchor="middle">−</text>
+    </g>
+
+    <!-- ============== WIRES ============== -->
+
+    <!-- MPU VCC → XIAO 3V3 -->
+    <path class="wire wire-red" d="M 858 290 L 820 290 L 820 315 L 700 315"/>
+    <!-- MPU GND → XIAO GND -->
+    <path class="wire wire-black" d="M 858 308 L 814 308 L 814 297 L 700 297"/>
+    <!-- MPU SCL → XIAO D5 -->
+    <path class="wire wire-yellow" d="M 858 326 L 800 326 L 800 369 L 700 369"/>
+    <!-- MPU SDA → XIAO D4 -->
+    <path class="wire wire-green" d="M 858 344 L 790 344 L 790 351 L 700 351"/>
+    <!-- MPU AD0 → GND (chained) -->
+    <path class="wire wire-black" d="M 858 398 L 780 398 L 780 297 L 700 297"/>
+
+    <!-- NeoPixel VCC → BAT+ rail (LiPo + tap) -->
+    <path class="wire wire-power-pos" d="M 858 120 L 750 120 L 750 700 L 530 700 L 530 750"/>
+    <!-- NeoPixel GND → XIAO GND -->
+    <path class="wire wire-black" d="M 858 160 L 760 160 L 760 297 L 700 297"/>
+    <!-- NeoPixel DIN → 330Ω → XIAO D0 -->
+    <path class="wire wire-purple" d="M 858 140 L 855 140 L 855 140 L 836 140 L 836 270 L 700 270"/>
+
+    <!-- DFPlayer VCC → BAT+ rail (LiPo + tap from left side) -->
+    <path class="wire wire-power-pos" d="M 260 130 L 440 130 L 440 700 L 530 700"/>
+    <!-- DFPlayer GND → XIAO GND -->
+    <path class="wire wire-black" d="M 60 148 L 50 148 L 50 540 L 460 540 L 460 297 L 490 297"/>
+    <!-- DFPlayer RX ← XIAO D8 (TX) via 1k -->
+    <path class="wire wire-orange" d="M 260 148 L 470 148 L 470 360 L 478 360 L 478 360"/>
+    <!-- DFPlayer TX → XIAO D9 (RX) -->
+    <path class="wire wire-blue" d="M 260 166 L 460 166 L 460 342 L 478 342"/>
+    <!-- DFPlayer SPK1 → Speaker + -->
+    <path class="wire wire-pink" d="M 260 184 L 290 184 L 290 140 L 310 140"/>
+    <!-- DFPlayer SPK2 → Speaker − -->
+    <path class="wire wire-pink" d="M 260 202 L 296 202 L 296 160 L 310 160"/>
+
+    <!-- Vibration stage +BAT → BAT+ rail (LiPo +) -->
+    <path class="wire wire-power-pos" d="M 432 660 L 530 660 L 530 750"/>
+    <!-- Vibration stage GND → XIAO GND -->
+    <path class="wire wire-black" d="M 432 760 L 460 760 L 460 765 L 565 765"/>
+    <!-- Vibration stage GATE → XIAO D3 -->
+    <path class="wire wire-orange" d="M 432 720 L 445 720 L 445 333 L 700 333"/>
+
+    <!-- LiPo + → XIAO BAT+ -->
+    <path class="wire wire-power-pos" d="M 530 820 L 530 830 L 548 830 L 548 512"/>
+    <!-- LiPo − → XIAO BAT− -->
+    <path class="wire wire-power-neg" d="M 570 820 L 570 835 L 628 835 L 628 512"/>
+
+    <!-- ============== Section labels ============== -->
+    <text x="160" y="58" class="annot-strong" text-anchor="middle">audio output</text>
+    <text x="960" y="56" class="annot-strong" text-anchor="middle">light output</text>
+    <text x="590" y="190" class="annot-strong" text-anchor="middle">controller</text>
+    <text x="958" y="222" class="annot-strong" text-anchor="middle">motion sensing</text>
+    <text x="245" y="568" class="annot-strong" text-anchor="middle">haptic output</text>
+    <text x="590" y="740" class="annot-strong" text-anchor="middle">power</text>
+
+  </svg>
+</div>
+
+<div class="legend">
+  <span><span class="swatch" style="background:#ff5252"></span> +BAT (3.7 V)</span>
+  <span><span class="swatch" style="background:#b1b9c2"></span> GND / Power −</span>
+  <span><span class="swatch" style="background:var(--red)"></span> 3V3</span>
+  <span><span class="swatch" style="background:var(--green)"></span> SDA</span>
+  <span><span class="swatch" style="background:var(--yellow)"></span> SCL</span>
+  <span><span class="swatch" style="background:var(--purple)"></span> NeoPixel DIN</span>
+  <span><span class="swatch" style="background:var(--orange)"></span> UART TX / GPIO out</span>
+  <span><span class="swatch" style="background:var(--blue)"></span> UART RX</span>
+  <span><span class="swatch" style="background:var(--pink)"></span> Speaker</span>
+  <span><span class="swatch" style="background:#6e7681"></span> GND wire</span>
+</div>
+
+<h2>Connection table</h2>
+<table>
+  <thead>
+    <tr><th>From</th><th>To</th><th>Wire</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+
+    <tr><td colspan="4" style="background:#1c2129; font-weight:600; color:var(--accent);">Motion sensing (MPU-6050)</td></tr>
+    <tr><td>MPU-6050 <code>VCC</code></td><td>XIAO <code>3V3</code></td><td>red</td><td>3.3 V logic — do <strong>not</strong> use 5 V even though the GY-521 tolerates it.</td></tr>
+    <tr><td>MPU-6050 <code>GND</code></td><td>XIAO <code>GND</code></td><td>black</td><td>shared ground</td></tr>
+    <tr><td>MPU-6050 <code>SCL</code></td><td>XIAO <code>D5</code></td><td>yellow</td><td>I²C clock</td></tr>
+    <tr><td>MPU-6050 <code>SDA</code></td><td>XIAO <code>D4</code></td><td>green</td><td>I²C data</td></tr>
+    <tr><td>MPU-6050 <code>AD0</code></td><td>XIAO <code>GND</code></td><td>any</td><td>locks I²C address to <code>0x68</code></td></tr>
+
+    <tr><td colspan="4" style="background:#1c2129; font-weight:600; color:var(--accent);">Light output (12-pixel WS2812B ring)</td></tr>
+    <tr><td>Ring <code>VCC</code></td><td>LiPo <code>+</code> (via BAT+ rail)</td><td>+BAT (red, thick)</td><td>3.7 V direct — WS2812B is in spec down to 3.5 V. Skips a boost converter.</td></tr>
+    <tr><td>Ring <code>GND</code></td><td>XIAO <code>GND</code></td><td>black</td><td>shared ground</td></tr>
+    <tr><td>Ring <code>DIN</code></td><td>330 Ω → XIAO <code>D0</code></td><td>purple</td><td>Series resistor is optional but recommended by Adafruit to clamp transients on the data line.</td></tr>
+    <tr><td><em>(optional)</em> 1000 µF</td><td>Ring <code>VCC</code> / <code>GND</code></td><td>—</td><td>Absorbs inrush current when many pixels light at once.</td></tr>
+
+    <tr><td colspan="4" style="background:#1c2129; font-weight:600; color:var(--accent);">Audio output (DFPlayer Mini)</td></tr>
+    <tr><td>DFPlayer <code>VCC</code></td><td>LiPo <code>+</code> (via BAT+ rail)</td><td>+BAT (red, thick)</td><td>DFPlayer spec is 3.2–5.0 V. 3.7 V is in spec; audio is slightly quieter than at 5 V.</td></tr>
+    <tr><td>DFPlayer <code>GND</code></td><td>XIAO <code>GND</code></td><td>black</td><td>shared ground</td></tr>
+    <tr><td>DFPlayer <code>RX</code></td><td>1 kΩ → XIAO <code>D8</code> (UART TX)</td><td>orange</td><td>Series 1 kΩ recommended in DFPlayer datasheet. ESP32 sends commands here.</td></tr>
+    <tr><td>DFPlayer <code>TX</code></td><td>XIAO <code>D9</code> (UART RX)</td><td>blue</td><td>3.3 V logic — direct connection fine.</td></tr>
+    <tr><td>DFPlayer <code>SPK1</code></td><td>Speaker <code>+</code></td><td>pink</td><td>DFPlayer drives the speaker directly — no extra amp needed.</td></tr>
+    <tr><td>DFPlayer <code>SPK2</code></td><td>Speaker <code>−</code></td><td>pink</td><td>—</td></tr>
+
+    <tr><td colspan="4" style="background:#1c2129; font-weight:600; color:var(--accent);">Haptic output (Xbox rumble motor)</td></tr>
+    <tr><td>Motor <code>+</code></td><td>LiPo <code>+</code> (via BAT+ rail)</td><td>+BAT (red, thick)</td><td>Direct from battery — motor draws 50–150 mA peaks.</td></tr>
+    <tr><td>Motor <code>−</code></td><td>MOSFET <code>D</code> (drain)</td><td>orange</td><td>Motor sinks through the MOSFET when PWM goes high.</td></tr>
+    <tr><td>1N4148 cathode</td><td>Motor <code>+</code> side</td><td>—</td><td>Flyback diode across the motor — anode on the MOSFET drain side, cathode on +BAT side. Protects the MOSFET from the motor's inductive kick when switching off.</td></tr>
+    <tr><td>MOSFET <code>S</code> (source)</td><td>XIAO <code>GND</code></td><td>black</td><td>—</td></tr>
+    <tr><td>MOSFET <code>G</code> (gate)</td><td>XIAO <code>D3</code></td><td>orange</td><td>PWM out. 2N7000 is logic-level; ESP32's 3.3 V is enough to fully enhance it.</td></tr>
+    <tr><td>100 kΩ pulldown</td><td>Gate ↔ GND</td><td>—</td><td>Holds the gate low (motor off) during boot, before the GPIO is configured as an output.</td></tr>
+
+    <tr><td colspan="4" style="background:#1c2129; font-weight:600; color:var(--accent);">Power</td></tr>
+    <tr><td>LiPo <code>+</code></td><td>XIAO <code>BAT+</code> pad</td><td>+BAT (red, thick)</td><td>solder pad on underside of XIAO</td></tr>
+    <tr><td>LiPo <code>−</code></td><td>XIAO <code>BAT−</code> pad</td><td>Power − (gray, thick)</td><td>solder pad on underside of XIAO</td></tr>
+
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Why power directly from the LiPo (3.7 V) for the loads instead of 5 V:</strong> the XIAO's <code>5V</code> pin only sources 5 V when USB is connected. Running off battery would require a boost converter (MT3608 or similar) to get 5 V to the NeoPixel ring and DFPlayer. Both parts are spec'd to run from 3.7 V — slightly dim LEDs and slightly quieter audio — which is acceptable here and saves ~10 mm² of board area and ~5 % of battery life. If a future revision wants full brightness, drop in a small boost on the LED rail only.
+</div>
+
+<h2>Pin map (firmware)</h2>
+<p>Match the constants near the top of <code>sensory_ball_v2.ino</code>:</p>
+<table>
+  <thead><tr><th>Function</th><th>Sketch constant</th><th>XIAO pin</th><th>ESP32-S3 GPIO</th></tr></thead>
+  <tbody>
+    <tr><td>I²C SDA</td><td><code>Wire</code> default</td><td>D4</td><td>GPIO5</td></tr>
+    <tr><td>I²C SCL</td><td><code>Wire</code> default</td><td>D5</td><td>GPIO6</td></tr>
+    <tr><td>NeoPixel data</td><td><code>PIN_NEOPIXEL</code></td><td>D0</td><td>GPIO1</td></tr>
+    <tr><td>DFPlayer UART TX (out to DFP RX)</td><td><code>PIN_DFP_RX</code></td><td>D8</td><td>GPIO7</td></tr>
+    <tr><td>DFPlayer UART RX (in from DFP TX)</td><td><code>PIN_DFP_TX</code></td><td>D9</td><td>GPIO8</td></tr>
+    <tr><td>Vibration motor PWM</td><td><code>PIN_VIB</code></td><td>D3</td><td>GPIO4</td></tr>
+    <tr><td><em>reserved (debug UART)</em></td><td>—</td><td>D6, D7</td><td>GPIO43, GPIO44</td></tr>
+    <tr><td><em>reserved (future)</em></td><td>—</td><td>D1, D2, D10</td><td>GPIO2, GPIO3, GPIO9</td></tr>
+  </tbody>
+</table>
+
+<div class="warn">
+  <strong>Pin name vs GPIO number gotcha:</strong> the XIAO silkscreen shows logical pins (<code>D0</code>–<code>D10</code>), but in code you can use either the silkscreen names (e.g. <code>D0</code>) or the raw ESP32-S3 GPIO numbers (e.g. <code>GPIO1</code>). When in doubt, use the silkscreen names — they're stable across XIAO variants. The GPIO column is here for cross-referencing the ESP32-S3 datasheet only.
+</div>
+
+<h2>Differences from v1</h2>
+<table>
+  <thead><tr><th>v1</th><th>v2</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td>4-pin RGB LED + 3 × 220 Ω resistors on D0/D1/D2</td><td>12-pixel WS2812B ring on D0 only</td><td>Smooth phase-synchronized animations across many pixels need addressable LEDs.</td></tr>
+    <tr><td>No audio</td><td>DFPlayer Mini + 8 Ω speaker on D8/D9 (UART1)</td><td>Audio is a third feedback channel that can mirror the pendulum rhythm.</td></tr>
+    <tr><td>No haptics</td><td>Xbox rumble motor on D3, switched by 2N7000 MOSFET</td><td>Tactile feedback through the spring transmission — the user can <em>feel</em> the rhythm.</td></tr>
+    <tr><td>D1, D2 used for LED PWM</td><td>D1, D2 free; D8/D9 used for UART</td><td>Frees D1/D2 for future expansion (button, sensor, etc.).</td></tr>
+    <tr><td>All loads on XIAO 3V3 regulated</td><td>NeoPixel, DFPlayer, motor on LiPo direct (+BAT rail)</td><td>3V3 regulator can't supply the peak draw of a 12-pixel ring + audio + motor simultaneously. LiPo direct can.</td></tr>
+  </tbody>
+</table>
+
+<p style="color:var(--muted); margin-top:3rem; font-size:13px;">
+  Sensory Ball <strong>v2</strong> · design document · see <a href="V2_DESIGN.md" style="color:var(--accent)">V2_DESIGN.md</a> for full rationale.
+</p>
+
+</div>
+</body>
+</html>

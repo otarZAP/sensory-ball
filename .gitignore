@@ -1,0 +1,21 @@
+# Arduino build artifacts
+build/
+*.hex
+*.elf
+*.bin
+*.map
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local parts/inventory files not meant for the public repo
+*_Parts_Inventory*.ods
+*_Parts_Inventory*.xlsx
